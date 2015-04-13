@@ -115,7 +115,6 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public void setMaxColSpan(int numColumns) {
-
         mSectionLayoutManager  = new SectionLayoutManager(mContext, numColumns);
     }
 

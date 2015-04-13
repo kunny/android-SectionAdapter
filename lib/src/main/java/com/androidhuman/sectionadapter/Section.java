@@ -83,9 +83,11 @@ public abstract class Section<T> {
             DisplayMetrics metrics = context.getResources().getDisplayMetrics();
             int displayWidthInDp = (int) (metrics.widthPixels / metrics.density);
             numColumns = Math.max(1, displayWidthInDp / columnWidthInDp);
+            if (numColumns > 3 && numColumns%2==1) {
+                numColumns  = numColumns-1;
+            }
         }
     }
-
 
     public void addItemDecoration(RecyclerView.ItemDecoration decor) {
         if (mDecors == null) {
