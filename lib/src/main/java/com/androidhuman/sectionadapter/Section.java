@@ -30,26 +30,33 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Section<T> {
+public abstract class Section<T, E> {
 
     public static final int DEFAULT_NUM_COLUMNS = 3;
+
     public static final int FILL_PARENT = -10;
 
     protected int offset = 0;
+
     boolean mHeaderEnabled = false;
-    int numColumns = DEFAULT_NUM_COLUMNS;
+
+    int numColumnCount = DEFAULT_NUM_COLUMNS;
+
     int columnWidthInDp = -1;
-    Object mHeaderData;
+
+    E mExtra;
+
     ArrayList<T> mItems;
+
     List<RecyclerView.ItemDecoration> mDecors;
 
     public Section() {
         mItems = new ArrayList<>();
     }
 
-    public Section(Object headerData) {
+    public Section(E extra) {
         this();
-        setHeaderData(headerData);
+        setExtra(extra);
     }
 
     public Section(boolean isHeaderEnabled) {
@@ -65,13 +72,13 @@ public abstract class Section<T> {
         return mHeaderEnabled && (position == 0);
     }
 
-    public void setHeaderData(Object header) {
-        mHeaderData = header;
-        mHeaderEnabled = true;
+    public Section setExtra(E extra) {
+        mExtra = extra;
+        return this;
     }
 
-    public Object getHeaderData() {
-        return mHeaderData;
+    public E getExtra() {
+        return mExtra;
     }
 
     public void setColumnWidthInDp(int width) {
@@ -82,9 +89,9 @@ public abstract class Section<T> {
         if (columnWidthInDp > 0) {
             DisplayMetrics metrics = context.getResources().getDisplayMetrics();
             int displayWidthInDp = (int) (metrics.widthPixels / metrics.density);
-            numColumns = Math.max(1, displayWidthInDp / columnWidthInDp);
-            if (numColumns > 3 && numColumns%2==1) {
-                numColumns  = numColumns-1;
+            numColumnCount = Math.max(1, displayWidthInDp / columnWidthInDp);
+            if (numColumnCount > 3 && numColumnCount % 2 == 1) {
+                numColumnCount = numColumnCount - 1;
             }
         }
     }
@@ -100,7 +107,7 @@ public abstract class Section<T> {
         return mDecors;
     }
 
-    public void setItems(ArrayList<T> items) {
+    public void setItems(List<T> items) {
         if (mItems.size() != 0) {
             mItems.clear();
         }
@@ -120,7 +127,7 @@ public abstract class Section<T> {
     }
 
     public int getChildCount() {
-        return isHeaderEnabled() ? getItemCount()+1 : getItemCount();
+        return isHeaderEnabled() ? getItemCount() + 1 : getItemCount();
     }
 
     public abstract int getItemViewType(int position);
@@ -128,11 +135,11 @@ public abstract class Section<T> {
     public abstract int[] getItemViewTypes();
 
     public int getItemSpan(int position) {
-        return isHeader(position) ? FILL_PARENT : numColumns;
+        return isHeader(position) ? FILL_PARENT : numColumnCount;
     }
 
-    public int getNumColumns() {
-        return numColumns;
+    public int getColumnCount() {
+        return numColumnCount;
     }
 
     public abstract RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType);
@@ -144,6 +151,7 @@ public abstract class Section<T> {
         public static final int ITEM_TYPE = -880319;
 
         private View mRoot;
+
         public TextView mTvTitle;
 
         public static DefaultHeaderHolder newHolder(ViewGroup parent) {
@@ -192,6 +200,7 @@ public abstract class Section<T> {
         }
 
         public interface OnTitleClickListener {
+
             void onClick(View v);
         }
     }
