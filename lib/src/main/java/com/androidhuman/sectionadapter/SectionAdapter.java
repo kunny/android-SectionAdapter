@@ -18,15 +18,19 @@
 package com.androidhuman.sectionadapter;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
+import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    public static final int INVALID_ITEM_VIEW_TYPE = -88031902;
 
     int childCnt = 0;
 
@@ -42,14 +46,21 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         mViewTypes = new SparseArray<>();
     }
 
+    @Nullable
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return findSectionByViewType(viewType).onCreateViewHolder(parent, viewType);
+        Section section = findSectionByViewType(viewType);
+        if (null != section) {
+            return section.onCreateViewHolder(parent, viewType);
+        }
+        return new MockViewHolder(new View(parent.getContext()));
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        bindViewHolderInSection(holder, position);
+        if (!(holder instanceof MockViewHolder)) {
+            bindViewHolderInSection(holder, position);
+        }
     }
 
     @Override
@@ -67,7 +78,7 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 position -= views;
             }
         }
-        throw new ArrayIndexOutOfBoundsException();
+        return INVALID_ITEM_VIEW_TYPE;
     }
 
     public void add(Section<?, ?> section, RecyclerView view) {
@@ -141,13 +152,9 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         childCnt = offset;
     }
 
+    @Nullable
     private Section findSectionByViewType(int viewType) {
-        Section section = mViewTypes.get(viewType);
-        if (section == null) {
-            throw new IllegalArgumentException(
-                    "Could not find the Section with view type " + viewType);
-        }
-        return section;
+        return mViewTypes.get(viewType);
     }
 
     private int getRequiredColumnCount(int position) {
@@ -159,7 +166,8 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 position -= views;
             }
         }
-        throw new ArrayIndexOutOfBoundsException();
+        // If there is no section exists, return default value
+        return 1;
     }
 
     private void updateMaxColSpan(RecyclerView view) {
@@ -188,6 +196,13 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             spanCount : spanCount / columnCount;
                 }
             });
+        }
+    }
+
+    class MockViewHolder extends RecyclerView.ViewHolder {
+
+        public MockViewHolder(View itemView) {
+            super(itemView);
         }
     }
 }

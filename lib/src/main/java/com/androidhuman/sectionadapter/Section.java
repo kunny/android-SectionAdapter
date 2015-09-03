@@ -51,16 +51,11 @@ public abstract class Section<T, E> {
     List<RecyclerView.ItemDecoration> mDecors;
 
     public Section() {
-        mItems = new ArrayList<>();
-    }
-
-    public Section(E extra) {
-        this();
-        setExtra(extra);
+        this(false);
     }
 
     public Section(boolean isHeaderEnabled) {
-        this();
+        mItems = new ArrayList<>();
         mHeaderEnabled = isHeaderEnabled;
     }
 
