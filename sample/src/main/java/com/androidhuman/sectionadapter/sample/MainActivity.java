@@ -5,12 +5,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.androidhuman.sectionadapter.SectionRecyclerView;
-
 
 public class MainActivity extends Activity {
-
-    SectionRecyclerView rv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
