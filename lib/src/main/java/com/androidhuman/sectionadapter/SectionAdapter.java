@@ -26,6 +26,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -36,6 +38,8 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     final ArrayList<Section> mSections;
 
+    HashSet<Class> mItemDecorClasses;
+
     SparseArray<Section> mViewTypes;
 
     Context mContext;
@@ -43,6 +47,7 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public SectionAdapter(Context context) {
         mContext = context;
         mSections = new ArrayList<>(5);
+        mItemDecorClasses = new LinkedHashSet<>(5);
         mViewTypes = new SparseArray<>();
     }
 
@@ -90,7 +95,10 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             List<RecyclerView.ItemDecoration> decors = section.getItemDecoration();
             if (decors != null) {
                 for (RecyclerView.ItemDecoration decor : decors) {
-                    view.addItemDecoration(decor);
+                    if (!mItemDecorClasses.contains(decor.getClass())) {
+                        view.addItemDecoration(decor);
+                        mItemDecorClasses.add(decor.getClass());
+                    }
                 }
             }
 
