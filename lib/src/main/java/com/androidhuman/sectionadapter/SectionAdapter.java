@@ -138,6 +138,18 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
+    public void clear() {
+        synchronized (mSections) {
+            if (!mSections.isEmpty()) {
+                mSections.clear();
+            }
+            if (mViewTypes.size() != 0) {
+                mViewTypes.clear();
+            }
+            calculateOffsetForSection();
+        }
+    }
+
     private void bindViewHolderInSection(RecyclerView.ViewHolder holder, int position) {
         for (Section section : mSections) {
             int views = section.getChildCount();
