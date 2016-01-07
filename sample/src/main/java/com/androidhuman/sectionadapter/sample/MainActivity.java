@@ -1,17 +1,30 @@
 package com.androidhuman.sectionadapter.sample;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 
 public class MainActivity extends Activity {
+
+    Button mBtnGooglePlayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mBtnGooglePlayList = (Button) findViewById(R.id.btn_activity_main_google_play_list);
+        mBtnGooglePlayList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, GooglePlayListActivity.class));
+            }
+        });
     }
 
     @Override

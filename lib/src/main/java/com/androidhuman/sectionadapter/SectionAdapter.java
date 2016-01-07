@@ -44,6 +44,8 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     Context mContext;
 
+    RecyclerView mRecyclerView;
+
     public SectionAdapter(Context context) {
         mContext = context;
         mSections = new ArrayList<>(5);
@@ -86,17 +88,17 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return INVALID_ITEM_VIEW_TYPE;
     }
 
-    public void add(Section<?, ?> section, RecyclerView view) {
-        add(mSections.size() > 0 ? mSections.size() : 0, section, view);
+    public void add(Section<?> section) {
+        add(mSections.size() > 0 ? mSections.size() : 0, section);
     }
 
-    public void add(int index, Section<?, ?> section, RecyclerView view) {
+    public void add(int index, Section<?> section) {
         synchronized (mSections) {
             List<RecyclerView.ItemDecoration> decors = section.getItemDecoration();
             if (decors != null) {
                 for (RecyclerView.ItemDecoration decor : decors) {
                     if (!mItemDecorClasses.contains(decor.getClass())) {
-                        view.addItemDecoration(decor);
+                        mRecyclerView.addItemDecoration(decor);
                         mItemDecorClasses.add(decor.getClass());
                     }
                 }
@@ -109,7 +111,7 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
 
             calculateOffsetForSection();
-            updateMaxColSpan(view);
+            updateMaxColSpan(mRecyclerView);
         }
     }
 
@@ -121,8 +123,9 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public void setupWithRecyclerView(RecyclerView view) {
-        view.setLayoutManager(new SectionLayoutManager(mContext));
-        view.setAdapter(this);
+        mRecyclerView = view;
+        mRecyclerView.setLayoutManager(new SectionLayoutManager(mContext));
+        mRecyclerView.setAdapter(this);
     }
 
     public void remove(int index) {
@@ -212,7 +215,7 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 @Override
                 public int getSpanSize(int position) {
                     int columnCount = getRequiredColumnCount(position);
-                    return (columnCount == Section.FILL_PARENT) ?
+                    return (columnCount == Section.MATCH_PARENT) ?
                             spanCount : spanCount / columnCount;
                 }
             });

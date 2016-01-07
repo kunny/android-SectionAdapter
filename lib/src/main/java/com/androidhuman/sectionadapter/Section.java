@@ -30,11 +30,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Section<T, E> {
+public abstract class Section<T> {
 
     public static final int DEFAULT_NUM_COLUMNS = 3;
 
-    public static final int FILL_PARENT = -10;
+    public static final int MATCH_PARENT = -10;
 
     protected int offset = 0;
 
@@ -43,8 +43,6 @@ public abstract class Section<T, E> {
     int numColumnCount = DEFAULT_NUM_COLUMNS;
 
     int columnWidthInDp = -1;
-
-    E mExtra;
 
     ArrayList<T> mItems;
 
@@ -65,15 +63,6 @@ public abstract class Section<T, E> {
 
     public final boolean isHeader(int position) {
         return mHeaderEnabled && (position == 0);
-    }
-
-    public Section setExtra(E extra) {
-        mExtra = extra;
-        return this;
-    }
-
-    public E getExtra() {
-        return mExtra;
     }
 
     public void setColumnWidthInDp(int width) {
@@ -130,7 +119,7 @@ public abstract class Section<T, E> {
     public abstract int[] getItemViewTypes();
 
     public int getItemSpan(int position) {
-        return isHeader(position) ? FILL_PARENT : numColumnCount;
+        return isHeader(position) ? MATCH_PARENT : numColumnCount;
     }
 
     public int getColumnCount() {
@@ -141,6 +130,7 @@ public abstract class Section<T, E> {
 
     public abstract void onBindViewHolder(RecyclerView.ViewHolder holder, int position);
 
+    @SuppressWarnings("unused")
     public static class DefaultHeaderHolder extends RecyclerView.ViewHolder {
 
         public static final int ITEM_TYPE = -880319;
@@ -167,7 +157,7 @@ public abstract class Section<T, E> {
             if (resolved) {
                 holder.setMoreButtonColor(value.data);
             } else {
-                holder.setMoreButtonColor(Color.parseColor("455A64"));
+                holder.setMoreButtonColor(Color.parseColor("#455A64"));
             }
 
             return holder;
