@@ -122,6 +122,14 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
+    @Nullable
+    public Section get(int position) {
+        if (position < 0 || position >= mSections.size()) {
+            return null;
+        }
+        return mSections.get(position);
+    }
+
     public void setupWithRecyclerView(RecyclerView view) {
         mRecyclerView = view;
         mRecyclerView.setLayoutManager(new SectionLayoutManager(mContext));
