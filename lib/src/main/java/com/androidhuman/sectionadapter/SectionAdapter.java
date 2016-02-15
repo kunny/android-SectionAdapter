@@ -18,6 +18,7 @@
 package com.androidhuman.sectionadapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -130,9 +131,15 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return mSections.get(position);
     }
 
-    public void setupWithRecyclerView(RecyclerView view) {
+    public void setupWithRecyclerView(@NonNull RecyclerView view) {
+        setupWithRecyclerView(view, new SectionLayoutManager(mContext));
+    }
+
+    public void setupWithRecyclerView(
+            @NonNull RecyclerView view,
+            @NonNull RecyclerView.LayoutManager lm) {
         mRecyclerView = view;
-        mRecyclerView.setLayoutManager(new SectionLayoutManager(mContext));
+        mRecyclerView.setLayoutManager(lm);
         mRecyclerView.setAdapter(this);
     }
 
@@ -223,8 +230,8 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 @Override
                 public int getSpanSize(int position) {
                     int columnCount = getRequiredColumnCount(position);
-                    return (columnCount == Section.MATCH_PARENT) ?
-                            spanCount : spanCount / columnCount;
+                    return (columnCount == Section.MATCH_PARENT)
+                            ? spanCount : spanCount / columnCount;
                 }
             });
         }

@@ -91,6 +91,13 @@ public abstract class Section<T> {
         return mDecors;
     }
 
+    public void addItem(T item) {
+        if (null == mItems) {
+            mItems = new ArrayList<>();
+        }
+        mItems.add(item);
+    }
+
     public void setItems(List<T> items) {
         if (mItems.size() != 0) {
             mItems.clear();
@@ -131,7 +138,7 @@ public abstract class Section<T> {
     public abstract void onBindViewHolder(RecyclerView.ViewHolder holder, int position);
 
     @SuppressWarnings("unused")
-    public static class DefaultHeaderHolder extends RecyclerView.ViewHolder {
+    public static final class DefaultHeaderHolder extends RecyclerView.ViewHolder {
 
         public static final int ITEM_TYPE = -880319;
 
