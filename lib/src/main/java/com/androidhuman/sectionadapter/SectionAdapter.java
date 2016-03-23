@@ -116,6 +116,16 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
+    public int findFirstSectionIndexWithType(Class<?> clazz) {
+        int sectionCnt = mSections.size();
+        for (int i = 0; i < sectionCnt; i++) {
+            if (clazz.isAssignableFrom(mSections.get(i).getClass())) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public void set(int index, Section section) {
         synchronized (mSections) {
             mSections.set(index, section);
@@ -129,6 +139,15 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             return null;
         }
         return mSections.get(position);
+    }
+
+    public boolean hasSectionWithType(Class<?> clazz) {
+        for (Section section : mSections) {
+            if (clazz.isAssignableFrom(section.getClass())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setupWithRecyclerView(@NonNull RecyclerView view) {
@@ -153,6 +172,25 @@ public class SectionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
                 calculateOffsetForSection();
             }
+        }
+    }
+
+    public void removeAllSectionsWithType(Class<?> clazz) {
+        synchronized (mSections) {
+            ArrayList<Section<?>> toDelete = new ArrayList<>();
+            for (Section<?> section :mSections) {
+                if (clazz.isAssignableFrom(section.getClass())) {
+                    toDelete.add(section);
+                }
+            }
+            for (Section<?> section: toDelete) {
+                mSections.remove(section);
+                int[] viewTypes = section.getItemViewTypes();
+                for (int viewType: viewTypes) {
+                    mViewTypes.delete(viewType);
+                }
+            }
+            calculateOffsetForSection();
         }
     }
 
